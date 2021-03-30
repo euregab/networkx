@@ -73,17 +73,25 @@ def generic_bfs_edges(G, source, neighbors=None, depth_limit=None, sort_neighbor
     if depth_limit is None:
         depth_limit = len(G)
     queue = deque([(source, depth_limit, neighbors(source))])
+    if queue:
+        print("Expanding nodes:")
+        parent_only_once = True
     while queue:
         parent, depth_now, children = queue[0]
         try:
+            if parent_only_once:
+                print("Expanded " + parent)
+                parent_only_once = False
             child = next(children)
             if child not in visited:
+                print("Found " + parent + "'s child: " + child)
                 yield parent, child
                 visited.add(child)
                 if depth_now > 1:
                     queue.append((child, depth_now - 1, neighbors(child)))
         except StopIteration:
             queue.popleft()
+            parent_only_once = True
 
 
 def bfs_edges(G, source, reverse=False, depth_limit=None, sort_neighbors=None):
